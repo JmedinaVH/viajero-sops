@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viajero Hostels · Base de Conocimiento</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #E8400C;
+    --orange-light: #FF6B3D;
+    --orange-pale: #FFF1ED;
+    --dark: #1A1512;
+    --dark-2: #2C2420;
+    --dark-3: #3D3330;
+    --mid: #6B5E59;
+    --light: #F5F0EE;
+    --white: #FFFFFF;
+    --border: rgba(232,64,12,0.15);
+    --border-light: rgba(0,0,0,0.08);
+    --success: #1D9E75;
+    --radius: 16px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 28px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    background: var(--dark-2);
+    flex-shrink: 0;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-logo {
+    width: 36px;
+    height: 36px;
+    background: var(--orange);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .header-name {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+  }
+  .header-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    margin-top: 1px;
+  }
+  .header-badge {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    background: rgba(232,64,12,0.2);
+    color: var(--orange-light);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(232,64,12,0.3);
+  }
+
+  /* SIDEBAR + MAIN LAYOUT */
+  .layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    height: calc(100vh - 73px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 260px;
+    background: var(--dark-2);
+    border-right: 1px solid rgba(255,255,255,0.07);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    overflow-y: auto;
+  }
+  .sidebar-section {
+    padding: 16px 16px 8px;
+  }
+  .sidebar-label {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+  .sop-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background 0.15s;
+    margin-bottom: 2px;
+  }
+  .sop-item:hover { background: rgba(255,255,255,0.06); }
+  .sop-item.active { background: rgba(232,64,12,0.15); }
+  .sop-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--mid);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .sop-item.active .sop-dot { background: var(--orange); }
+  .sop-item-text {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.3;
+    transition: color 0.15s;
+  }
+  .sop-item.active .sop-item-text,
+  .sop-item:hover .sop-item-text { color: rgba(255,255,255,0.9); }
+  .sop-tag {
+    margin-left: auto;
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    background: rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.35);
+    padding: 2px 7px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  .sidebar-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.07);
+    margin: 8px 16px;
+  }
+
+  .sidebar-add {
+    margin: 8px 16px 16px;
+    padding: 9px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px dashed rgba(232,64,12,0.3);
+    background: transparent;
+    color: var(--orange-light);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.15s;
+    width: calc(100% - 32px);
+    text-align: left;
+  }
+  .sidebar-add:hover { background: rgba(232,64,12,0.08); }
+
+  /* MAIN CHAT */
+  .main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--dark);
+  }
+
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .chat-area::-webkit-scrollbar { width: 4px; }
+  .chat-area::-webkit-scrollbar-track { background: transparent; }
+  .chat-area::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+  /* WELCOME */
+  .welcome {
+    text-align: center;
+    padding: 40px 20px 20px;
+  }
+  .welcome-icon {
+    width: 56px;
+    height: 56px;
+    background: var(--orange);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 22px;
+  }
+  .welcome h2 {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .welcome p {
+    font-size: 14px;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.6;
+    max-width: 400px;
+    margin: 0 auto 24px;
+  }
+  .chips-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .chip {
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.7);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .chip:hover {
+    background: rgba(232,64,12,0.15);
+    border-color: rgba(232,64,12,0.4);
+    color: #fff;
+  }
+
+  /* MESSAGES */
+  .msg-wrap {
+    display: flex;
+    gap: 12px;
+    max-width: 760px;
+    width: 100%;
+    margin: 0 auto;
+    align-self: stretch;
+  }
+  .msg-wrap.user { flex-direction: row-reverse; }
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .msg-wrap.bot .msg-avatar { background: var(--orange); color: #fff; }
+  .msg-wrap.user .msg-avatar { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+
+  .msg-bubble {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.65;
+    max-width: calc(100% - 44px);
+  }
+  .msg-wrap.bot .msg-bubble {
+    background: var(--dark-2);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: rgba(255,255,255,0.9);
+    border-top-left-radius: 4px;
+    white-space: pre-wrap;
+  }
+  .msg-wrap.user .msg-bubble {
+    background: var(--orange);
+    color: #fff;
+    border-top-right-radius: 4px;
+  }
+
+  .sop-source-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    background: rgba(232,64,12,0.15);
+    color: var(--orange-light);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(232,64,12,0.25);
+    margin-top: 8px;
+  }
+
+  /* TYPING */
+  .typing-dots {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 4px 0;
+  }
+  .typing-dots span {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    animation: tdot 1.2s infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes tdot { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-5px)} }
+
+  /* INPUT */
+  .input-area {
+    padding: 16px 32px 20px;
+    background: var(--dark);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+  .input-box {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    background: var(--dark-2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    padding: 10px 12px 10px 16px;
+    transition: border-color 0.2s;
+  }
+  .input-box:focus-within { border-color: rgba(232,64,12,0.5); }
+  #user-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: none;
+    max-height: 120px;
+    min-height: 22px;
+  }
+  #user-input::placeholder { color: rgba(255,255,255,0.25); }
+  #send-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--orange);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.1s;
+  }
+  #send-btn:hover { background: var(--orange-light); }
+  #send-btn:active { transform: scale(0.95); }
+  #send-btn:disabled { background: rgba(255,255,255,0.1); cursor: not-allowed; }
+  #send-btn svg { width: 16px; height: 16px; fill: white; }
+
+  .input-hint {
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+    margin-top: 8px;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* MODAL AGREGAR SOP */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--dark-2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 28px;
+    width: 100%;
+    max-width: 500px;
+  }
+  .modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 20px; line-height: 1.5; }
+  .modal label { font-size: 12px; color: rgba(255,255,255,0.5); display: block; margin-bottom: 6px; font-family: 'DM Mono', monospace; }
+  .modal input, .modal textarea, .modal select {
+    width: 100%;
+    background: var(--dark-3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    outline: none;
+    margin-bottom: 14px;
+  }
+  .modal input:focus, .modal textarea:focus { border-color: rgba(232,64,12,0.5); }
+  .modal textarea { height: 120px; resize: vertical; }
+  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-cancel {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-save {
+    padding: 9px 18px;
+    border-radius: 8px;
+    border: none;
+    background: var(--orange);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .btn-save:hover { background: var(--orange-light); }
+
+  @media (max-width: 640px) {
+    .sidebar { display: none; }
+    .chat-area { padding: 20px 16px; }
+    .input-area { padding: 12px 16px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-brand">
+    <div class="header-logo">VH</div>
+    <div>
+      <div class="header-name">Viajero Hostels</div>
+      <div class="header-sub">Base de conocimiento interna</div>
+    </div>
+  </div>
+  <div class="header-badge">SOPs · v1.0</div>
+</div>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Operaciones</div>
+      <div class="sop-item active" onclick="setActive(this, 'rebook')">
+        <div class="sop-dot"></div>
+        <div class="sop-item-text">Re-Book · Extender reserva</div>
+        <span class="sop-tag">v1.0</span>
+      </div>
+      <div class="sop-item" onclick="setActive(this, 'checkin')">
+        <div class="sop-dot"></div>
+        <div class="sop-item-text">Check-in estándar</div>
+        <span class="sop-tag">próx.</span>
+      </div>
+      <div class="sop-item" onclick="setActive(this, 'checkout')">
+        <div class="sop-dot"></div>
+        <div class="sop-item-text">Check-out y cobro</div>
+        <span class="sop-tag">próx.</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Loyalty Program</div>
+      <div class="sop-item" onclick="setActive(this, 'loyalty')">
+        <div class="sop-dot"></div>
+        <div class="sop-item-text">Afiliación huésped</div>
+        <span class="sop-tag">próx.</span>
+      </div>
+      <div class="sop-item" onclick="setActive(this, 'upgrades')">
+        <div class="sop-dot"></div>
+        <div class="sop-item-text">Proceso de upgrades</div>
+        <span class="sop-tag">próx.</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Revenue</div>
+      <div class="sop-item" onclick="setActive(this, 'pricing')">
+        <div class="sop-dot"></div>
+        <div class="sop-item-text">Estrategia de precios</div>
+        <span class="sop-tag">próx.</span>
+      </div>
+      <div class="sop-item" onclick="setActive(this, 'cierre')">
+        <div class="sop-dot"></div>
+        <div class="sop-item-text">Cierre mensual</div>
+        <span class="sop-tag">próx.</span>
+      </div>
+    </div>
+    <div class="sidebar-divider"></div>
+    <button class="sidebar-add" onclick="openModal()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Agregar SOP
+    </button>
+  </div>
+
+  <!-- MAIN CHAT -->
+  <div class="main">
+    <div class="chat-area" id="chat-area">
+      <div class="welcome" id="welcome-screen">
+        <div class="welcome-icon">📋</div>
+        <h2>¿En qué necesitas ayuda hoy?</h2>
+        <p>Pregunta sobre cualquier procedimiento operativo. Tengo acceso a todos los SOPs de Viajero Hostels.</p>
+        <div class="chips-grid">
+          <button class="chip" onclick="sendChip('¿Cómo hago un Re-Book paso a paso?')">¿Cómo hago un Re-Book?</button>
+          <button class="chip" onclick="sendChip('¿Cuándo debo usar la fuente Re-Book y cuándo Directo?')">Re-Book vs Directo</button>
+          <button class="chip" onclick="sendChip('¿Por qué es importante el Re-Book para el revenue?')">Importancia del Re-Book</button>
+          <button class="chip" onclick="sendChip('¿Quién es responsable del proceso de Re-Book?')">¿Quién lo hace?</button>
+          <button class="chip" onclick="sendChip('¿Qué pasa si el huésped quiere reservar para otro mes?')">Reserva para otro mes</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-box">
+        <textarea id="user-input" placeholder="Pregunta sobre cualquier SOP o procedimiento..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button id="send-btn" onclick="handleSend()">
+          <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+        </button>
+      </div>
+      <div class="input-hint">Enter para enviar · Shift+Enter para nueva línea</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR SOP -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>Agregar nuevo SOP</h3>
+    <p>Pega el contenido del procedimiento. El chatbot lo aprenderá inmediatamente y podrá responder preguntas sobre él.</p>
+    <label>NOMBRE DEL SOP</label>
+    <input type="text" id="new-sop-name" placeholder="Ej: Check-in estándar en Cloudbeds">
+    <label>CATEGORÍA</label>
+    <select id="new-sop-cat">
+      <option>Operaciones</option>
+      <option>Loyalty Program</option>
+      <option>Revenue</option>
+      <option>Experiencia</option>
+      <option>Seguridad</option>
+    </select>
+    <label>CONTENIDO DEL SOP</label>
+    <textarea id="new-sop-content" placeholder="Pega aquí el texto completo del procedimiento..."></textarea>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" onclick="saveSOP()">Guardar SOP</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// BASE DE CONOCIMIENTO — AGREGAR SOPs AQUÍ
+// ============================================================
+const SOPS = {
+  rebook: {
+    nombre: "Re-Book · Extender reserva en Cloudbeds",
+    categoria: "Operaciones",
+    version: "1.0",
+    fecha: "23/07/2025",
+    contenido: `
+# SOP: Re-Book — Cómo extender una reserva en Cloudbeds
+
+## Objetivo
+Estandarizar el procedimiento para realizar extensiones de estadía bajo la estrategia Re-book en Cloudbeds, asegurando trazabilidad operativa, correcta asignación de fuente y optimización de ingresos desde el enfoque de revenue.
+
+## Alcance
+Aplica a todas las reservas que se extienden directamente en el hotel, ya sea por canal directo o provenientes de una OTA, siempre que la extensión se realice en el mismo momento del check-out del huésped.
+
+## Responsables
+- Recepcionistas / Front Desk: Detectar solicitudes de extensión, aplicar el procedimiento y registrar fuente adecuada.
+- Coordinador/analista de Revenue: Revisar uso de la fuente "Re-book" y analizar impacto en KPIs de conversión directa.
+
+## Justificación estratégica
+La estrategia de Re-Book es importante porque:
+- Incrementa la ocupación, especialmente en temporada baja.
+- Reduce costos de distribución al evitar comisiones de OTAs.
+- Fideliza al cliente convirtiendo una reserva OTA en cliente directo.
+- Genera oportunidades de upsell: upgrades, paquetes especiales, etc.
+
+## Regla clave: ¿Cuándo usar fuente "Re-Book" vs "Directo"?
+- RE-BOOK: cuando el huésped extiende su estadía INMEDIATAMENTE después del check-out (mismo momento).
+- DIRECTO: cuando es un cliente frecuente que quiere reservar para otra fecha futura (otro mes, otro viaje).
+
+## Pasos del procedimiento
+
+### Paso 1 — Check-out de la reserva inicial
+Dale check-out a la reserva original aunque sea de canal directo o de una OTA. Esto es obligatorio antes de crear la nueva.
+
+### Paso 2 — Crear nueva reserva
+En Cloudbeds, hacer clic en el ícono (+) en la parte superior de la pantalla para iniciar una nueva reserva.
+
+### Paso 3 — Configurar la nueva reserva
+- Seleccionar fuente: RE-BOOK (muy importante)
+- Seleccionar rango de fechas (las noches extendidas)
+- En "Mostrar", desplegar las opciones y seleccionar los 3 tipos de tarifas:
+  1. Tarifa base
+  2. Planes de tarifas
+  3. Tarifas con códigos
+- Así se mostrarán todas las tarifas promocionales vigentes.
+
+### Paso 4 — Elegir categoría de habitación
+- Seleccionar el tipo de habitación deseado.
+- Si la sede tiene un código especial para extensiones, ingresarlo para aplicar el descuento correspondiente (ej: Extensión 15%).
+
+### Paso 5 — Diligenciar información
+- Presionar "Información de la reserva".
+- Completar los campos obligatorios.
+- Los datos personales del huésped ya están guardados en el sistema y se llenan automáticamente al ingresar el nombre.
+
+### Paso 6 — Confirmar y pagar
+- Clic en "Confirmar y pagar".
+- Revisar toda la información.
+- Clic en "Confirmar reserva".
+
+### Paso 7 — Verificar
+- Al ingresar nuevamente a la reserva debe aparecer con FUENTE: RE-BOOK en amarillo.
+- Si no aparece Re-Book, el proceso no se realizó correctamente.
+
+## Errores comunes a evitar
+- No hacer check-out antes de crear la nueva reserva.
+- Usar fuente "Directo" en lugar de "Re-Book" para extensiones inmediatas.
+- No seleccionar los 3 tipos de tarifas (se pierden promociones vigentes).
+- Olvidar ingresar el código de extensión si la sede lo tiene configurado.
+
+## Impacto en KPIs
+El Re-Book convierte clientes OTA en clientes directos, lo que significa que el hostel retiene 100% del ingreso sin pagar comisión. Esto impacta directamente el ADR neto y el TNC de la propiedad.
+    `.trim()
+  }
+};
+
+// SOPs adicionales (se agregan dinámicamente)
+const SOPS_DINAMICOS = [];
+
+function getContextoCompleto() {
+  let contexto = '';
+  // SOPs base
+  for (const key in SOPS) {
+    const s = SOPS[key];
+    contexto += `\n\n===== SOP: ${s.nombre} (${s.categoria}) =====\n${s.contenido}`;
+  }
+  // SOPs dinámicos agregados por el equipo
+  SOPS_DINAMICOS.forEach(s => {
+    contexto += `\n\n===== SOP: ${s.nombre} (${s.categoria}) =====\n${s.contenido}`;
+  });
+  return contexto;
+}
+
+const SYSTEM_PROMPT = () => `Eres el asistente interno de Viajero Hostels. Tu única función es responder preguntas del equipo operativo basándote EXCLUSIVAMENTE en los SOPs que tienes disponibles.
+
+REGLAS IMPORTANTES:
+- Responde SIEMPRE en español.
+- Sé directo y práctico. El equipo necesita respuestas rápidas en el trabajo.
+- Cuando respondas sobre un procedimiento, usa numeración clara y pasos concretos.
+- Si la pregunta está respondida en un SOP, cita el procedimiento exacto.
+- Si el equipo pregunta algo que NO está en los SOPs, di claramente: "Este procedimiento aún no está documentado en los SOPs disponibles."
+- No inventes procedimientos. Solo usa lo que está en los SOPs.
+- Al final de cada respuesta sobre un SOP específico, indica el nombre del SOP fuente entre corchetes: [Fuente: nombre del SOP]
+- Máximo 300 palabras por respuesta. Si necesita más detalle, ofrece ampliar.
+
+SOPs DISPONIBLES:
+${getContextoCompleto()}`;
+
+let history = [];
+let busy = false;
+
+function setActive(el, key) {
+  document.querySelectorAll('.sop-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function addMsg(role, text) {
+  const welcome = document.getElementById('welcome-screen');
+  if (welcome) welcome.remove();
+
+  const area = document.getElementById('chat-area');
+  const wrap = document.createElement('div');
+  wrap.className = `msg-wrap ${role}`;
+
+  const av = document.createElement('div');
+  av.className = 'msg-avatar';
+  av.textContent = role === 'user' ? 'TÚ' : 'VH';
+
+  const bub = document.createElement('div');
+  bub.className = 'msg-bubble';
+
+  if (role === 'bot') {
+    // Detectar fuente en el texto
+    const fuenteMatch = text.match(/\[Fuente: (.+?)\]/);
+    let displayText = text;
+    let fuenteTag = '';
+    if (fuenteMatch) {
+      displayText = text.replace(fuenteMatch[0], '').trim();
+      fuenteTag = `<div class="sop-source-tag">📋 ${fuenteMatch[1]}</div>`;
+    }
+    bub.innerHTML = `<span style="white-space:pre-wrap">${escapeHtml(displayText)}</span>${fuenteTag}`;
+  } else {
+    bub.textContent = text;
+  }
+
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+  return bub;
+}
+
+function escapeHtml(t) {
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function showTyping() {
+  const area = document.getElementById('chat-area');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg-wrap bot';
+  wrap.id = 'typing';
+  wrap.innerHTML = `<div class="msg-avatar">VH</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+async function ask(question) {
+  if (busy) return;
+  busy = true;
+  document.getElementById('send-btn').disabled = true;
+
+  history.push({ role: 'user', content: question });
+  addMsg('user', question);
+  showTyping();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: SYSTEM_PROMPT(),
+        messages: history
+      })
+    });
+    const data = await res.json();
+    const reply = data.content?.map(b => b.text || '').join('') || 'No pude obtener respuesta.';
+    removeTyping();
+    addMsg('bot', reply);
+    history.push({ role: 'assistant', content: reply });
+  } catch(e) {
+    removeTyping();
+    addMsg('bot', 'Error de conexión. Verifica tu internet e intenta nuevamente.');
+  }
+
+  busy = false;
+  document.getElementById('send-btn').disabled = false;
+}
+
+function handleSend() {
+  const input = document.getElementById('user-input');
+  const q = input.value.trim();
+  if (!q || busy) return;
+  input.value = '';
+  input.style.height = 'auto';
+  ask(q);
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSend();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function sendChip(text) { ask(text); }
+
+// Modal para agregar SOPs
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+function saveSOP() {
+  const nombre = document.getElementById('new-sop-name').value.trim();
+  const cat = document.getElementById('new-sop-cat').value;
+  const contenido = document.getElementById('new-sop-content').value.trim();
+
+  if (!nombre || !contenido) {
+    alert('Completa el nombre y el contenido del SOP.');
+    return;
+  }
+
+  SOPS_DINAMICOS.push({ nombre, categoria: cat, contenido });
+
+  // Agregar al sidebar
+  const section = document.querySelector('.sidebar-section:first-child');
+  const newItem = document.createElement('div');
+  newItem.className = 'sop-item';
+  newItem.innerHTML = `<div class="sop-dot"></div><div class="sop-item-text">${nombre}</div><span class="sop-tag">nuevo</span>`;
+  newItem.onclick = function() { setActive(this); };
+  section.appendChild(newItem);
+
+  // Limpiar y cerrar
+  document.getElementById('new-sop-name').value = '';
+  document.getElementById('new-sop-content').value = '';
+  closeModal();
+
+  // Confirmar
+  addMsg('bot', `✅ SOP "${nombre}" agregado correctamente. Ya puedo responder preguntas sobre este procedimiento.\n\n¿Quieres que te explique algo sobre él?`);
+}
+
+// Cerrar modal al hacer click fuera
+document.getElementById('modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
